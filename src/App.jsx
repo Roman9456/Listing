@@ -1,4 +1,4 @@
-import { Listing, Item } from './components/Listing';
+import { Item, Listing } from './components/Listing';
 import * as items from './data/etsy.json';
 
 function App() {

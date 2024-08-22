@@ -1,14 +1,41 @@
+import React from 'react';
 import PropTypes from 'prop-types';
 
-export class Item {
-  constructor({ title = 'Undefined title', url = '#', MainImage = { url_570xN: './src/img/undefined.jpg' }, currency_code = 'руб.', price = '0', quantity = 0 }) {
-    // обработка названия
-    this.title = title;
-    if (title.length > 50) {
-      this.title = title.substring(0, 50) + '...';
-    }
+interface MainImage {
+  url_570xN: string;
+}
 
-    // обработка валюты
+interface ItemProps {
+  title?: string;
+  url?: string;
+  MainImage?: MainImage;
+  currency_code?: string;
+  price?: string;
+  quantity?: number;
+}
+
+export class Item {
+  title: string;
+  url: string;
+  MainImage: MainImage;
+  currency_code: string;
+  price: string;
+  quantity: number;
+  quantityClass: string;
+  url_570xN: string;
+
+  constructor({
+    title = 'Undefined title',
+    url = '#',
+    MainImage = { url_570xN: './src/img/undefined.jpg' },
+    currency_code = 'rub.',
+    price = '0',
+    quantity = 0,
+  }: ItemProps) {
+    // Handle title
+    this.title = title.length > 50 ? `${title.substring(0, 50)}...` : title;
+
+    // Handle currency
     this.currency_code = currency_code;
     if (currency_code === 'USD') {
       this.currency_code = '$';
@@ -16,7 +43,7 @@ export class Item {
       this.currency_code = '€';
     }
 
-    // обработка количества
+    // Handle quantity
     this.quantity = quantity;
     this.quantityClass = 'item-quantity ';
     if (quantity <= 10) {
@@ -27,39 +54,41 @@ export class Item {
       this.quantityClass += 'level-high';
     }
 
-    // обработка URL картинки
+    // Handle image URL
     this.url_570xN = MainImage.url_570xN;
 
-    // остальное
+    // Other properties
     this.url = url;
     this.MainImage = MainImage;
     this.price = price;
   }
 }
 
-export function Listing({ item }) {
+interface ListingProps {
+  item: Item;
+}
+
+export const Listing: React.FC<ListingProps> = ({ item }) => {
   console.log(item);
   return (
     <div className="item">
       <div className="item-image">
         <a href={item.url}>
-          <img src={item.url_570xN}></img>
+          <img src={item.url_570xN} alt={item.title} />
         </a>
       </div>
       <div className="item-details">
         <p className="item-title">{item.title}</p>
-
-        {(item.currency_code !== 'USD' && item.currency_code !== 'EUR') ? (
+        {item.currency_code !== 'USD' && item.currency_code !== 'EUR' ? (
           <p className="item-price">{item.price} {item.currency_code}</p>
         ) : (
           <p className="item-price">{item.currency_code} {item.price}</p>
         )}
-        
         <p className={item.quantityClass}>{item.quantity} left</p>
       </div>
     </div>
   );
-}
+};
 
 Listing.propTypes = {
   item: PropTypes.instanceOf(Item).isRequired,
