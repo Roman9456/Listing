@@ -1,4 +1,4 @@
-import { Item, Listing } from './components/Listing';
+import { createItem, Listing } from './components/Listing';
 import * as items from './data/etsy.json';
 
 function App() {
@@ -7,11 +7,10 @@ function App() {
   return (
     <div className='item-list'>
       {parsedItems.map(el => 
-        <Listing key={el.listing_id} item={new Item(el)} />
+        <Listing key={el.listing_id} item={createItem(el)} />
       )}
-      
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
